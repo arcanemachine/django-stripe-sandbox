@@ -1,0 +1,14 @@
+#!/bin/bash
+# This hook is sourced before this virtualenv is deactivated.
+
+
+
+unset DJANGO_BASE_DIR
+unset DJANGO_PROJECT_FOLDER_NAME
+unset DJANGO_SERVER_PORT
+
+unset DJANGO_DEBUG
+unset DJANGO_SECRET_KEY
+
+unset STRIPE_SECRET_KEY
+unset STRIPE_PUBLISHABLE_KEY
