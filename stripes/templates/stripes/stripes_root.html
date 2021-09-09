@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block title %}Django Stripe Sandbox{% endblock %}
+{% block body_title %}Django Stripe Sandbox{% endblock %}
+{% block body_subtitle %}Homepage{% endblock %}
+
+{% block content %}
+
+<ul class="list-unstyled">
+  <li><span class="fs-3">Customers</span>
+    <ul>
+      <li>
+        <a href="{% url 'stripes:customer_list' %}">
+          View all Customers
+        </a>
+      </li>
+      <li>
+        <a href="{% url 'stripes:customer_create' %}">
+          Create A Customer
+        </a>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+
+{% endblock content %}

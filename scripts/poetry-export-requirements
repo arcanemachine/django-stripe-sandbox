@@ -1,0 +1,50 @@
+#!/usr/bin/python3
+
+import argparse
+import subprocess
+
+parser = argparse.ArgumentParser()
+
+# filename
+default_filename = "requirements.poetry.txt"
+parser.add_argument(
+    '--output',
+    '-o',
+    help=f"Filename to output. Defaults to '{default_filename}'")
+parser.add_argument(
+    '--echo',
+    '-e',
+    action="store_true",
+    help="Echo the command in the console.")
+
+args = parser.parse_args()
+
+
+def main():
+    output_filename = ""
+    if args.output:
+        output_filename = args.output
+        print(f"\nExporting requirements to '{output_filename}'...")
+    else:
+        output_filename = default_filename
+        print(f"\nOutput filename not provided. Using {default_filename}...")
+
+    bash_command =\
+        "poetry export -f requirements.txt --without-hashes "\
+        f"--output {output_filename}"
+    if args.echo:
+        print(f"\n{bash_command}\n")
+
+    try:
+        res = subprocess.check_output(bash_command.split())
+    except subprocess.CalledProcessError:
+        print("\nThe command could not be executed. "
+              "Are you in the right directory?\n")
+        return False
+
+    for line in res.splitlines():
+        print(line)
+
+
+if __name__ == "__main__":
+    main()

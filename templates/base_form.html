@@ -1,0 +1,118 @@
+{% load crispy_forms_tags %}
+
+<form class="mt-2 form{% if form_class %} {{ form_class }}{% endif %}" method="post"{% if autocomplete == False %}
+      autocomplete="off"{% endif %}>
+
+  {% csrf_token %}
+
+  <div class="mb-4 form-item-container">
+    {{ form|crispy }}
+  </div>
+
+  {% if confirm_alert_text %}
+    <div class="mb-4 alert alert-{% if confirm_style %}{{ confirm_style }}{% else %}info{% endif %}" role="alert">
+      <label class="mb-0">
+        <input type="checkbox"
+               id="confirm-alert-checkbox"
+               name="confirm-alert-checkbox"
+               class="me-2"
+               value="1"
+               required>
+        {{ confirm_alert_text }}
+      </label>
+    </div>
+  {% endif %}
+
+  <div>
+    {% if not cancel_button == False %}
+      <span class="me-2">
+        {% if cancel_url %}
+          <a href="{{ cancel_url }}"
+             class="btn btn-{% if cancel_style %}{{ cancel_style }}{% else %}secondary{% endif %}">
+            {% if cancel_button_text %}
+              {{ cancel_button_text }}
+            {% else %}
+              Cancel
+            {% endif %}
+          </a>
+        {% else %}
+          <button type="button"
+                  class="ms-2 btn btn-{% if cancel_style %}{{ cancel_style }}{% else %}secondary{% endif %}" onclick="history.go(-1)">
+            {% if cancel_button_text %}
+              {{ cancel_button_text }}
+            {% else %}
+              Cancel
+            {% endif %}
+          </button>
+        {% endif %}
+      </span>
+    {% endif %}
+
+    <button type="submit"
+            id="form-button-submit"
+            class="btn btn-{% if confirm_style %}{{ confirm_style }}{% else %}success{% endif %} form-button form-button-submit">
+      {% if submit_button_text %}
+        {{ submit_button_text }}
+      {% else %}
+        Submit
+      {% endif %}
+    </button>
+
+  </div>
+</form>
+
+<script>
+/* Warn user before leaving page if changes have been made */
+"use strict";
+(() => {
+const modified_inputs = new Set;
+const defaultValue = "defaultValue";
+// store default values
+addEventListener("beforeinput", (evt) => {
+    const target = evt.target;
+    if (!(defaultValue in target || defaultValue in target.dataset)) {
+        target.dataset[defaultValue] = ("" + (target.value || target.textContent)).trim();
+    }
+});
+// detect input modifications
+addEventListener("input", (evt) => {
+    const target = evt.target;
+
+    // do not add listeners to certain parameters
+    if (target.id = 'id_username' ||
+        target.id === 'id_password' || 
+        target.id === 'id_captcha_1') {
+      return false;
+    }
+
+    let original;
+    if (defaultValue in target) {
+        original = target[defaultValue];
+    } else {
+        original = target.dataset[defaultValue];
+    }
+    if (original !== ("" + (target.value || target.textContent)).trim()) {
+        if (!modified_inputs.has(target)) {
+            modified_inputs.add(target);
+        }
+    } else if (modified_inputs.has(target)) {
+        modified_inputs.delete(target);
+    }
+});
+// clear modified inputs upon form submission
+addEventListener("submit", (evt) => {
+    modified_inputs.clear();
+    // to prevent the warning from happening, it is advisable
+    // that you clear your form controls back to their default
+    // state with evt.target.reset() or form.reset() after submission
+});
+// warn before closing if any inputs are modified
+addEventListener("beforeunload", (evt) => {
+    if (modified_inputs.size) {
+        const unsaved_changes_warning = "Changes you made may not be saved.";
+        evt.returnValue = unsaved_changes_warning;
+        return unsaved_changes_warning;
+    }
+});
+})();
+</script>

@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ OBJECT_NAME }} List{% endblock %}
+{% block body_title %}{{ OBJECT_NAME }} List{% endblock %}
+{% block body_subtitle %}{{ OBJECT_NAME }} List{% endblock %}
+
+{% block content %}
+
+{% if QUERYSET_VALUES %}
+  <ul>
+    {% for index, values in QUERYSET_VALUES.items %}
+      <li class="mb-2">{{ OBJECT_NAME }} #{{ values.id }}
+        - <a href="/{{ OBJECT_NAME|lower }}/{{ values.id }}/update/">Update</a>
+        - <a href="/{{ OBJECT_NAME|lower }}/{{ values.id }}/delete/">Delete</a>
+        <ul>
+          {% for key, value in values.items %}
+            {% if key not in OBJECT_VALUES_TO_IGNORE %}
+              <li>{{ key }} - {{ value }}</li>
+            {% endif %}
+          {% endfor %}
+        </ul>
+      </li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <p class="fw-bold">No '{{ OBJECT_NAME }}' objects have been created.</p>
+{% endif %}
+
+<ul class="bottom-links">
+  <li>
+    <a href="/{{ OBJECT_NAME|lower }}/create/">Create a new {{ OBJECT_NAME }}</a>
+  </li>
+</ul>
+
+{% endblock content %}

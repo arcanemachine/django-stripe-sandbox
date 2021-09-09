@@ -1,0 +1,147 @@
+{% load static %}
+
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon"
+          type="image/png"
+          href="{% static 'img/favicon.ico' %}">
+
+    <title>{% block title %}{% endblock title %} - {{ PROJECT_NAME }}</title>
+
+    {% block head_script %}{% endblock %}
+
+    <!-- css -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+
+  </head>
+
+  <body>
+    {% block body_start_script %}{% endblock %}
+    <div id="page-container">
+
+      <noscript>
+        <h2 class="my-2 text-danger text-center">
+          This website requires Javascript to function correctly.
+        </h2>
+      </noscript>
+
+      <nav class="navbar navbar-expand-lg navbar-dark bg-primary
+                  border-bottom border-gray">
+        <div class="container-fluid">
+          <a href="{% url 'stripes:stripes_root' %}"
+             class="navbar-brand">{{ PROJECT_NAME }}</a>
+          <button
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent"
+            aria-expanded="false"
+            aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav ms-auto mb-2 mb-lg-0 text-center">
+              <li class="nav-item">
+                <a class="nav-link"
+                   href="{% url 'stripes:stripes_root' %}">
+                  Home
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>   
+
+      <!-- content -->
+      <div id="page-content"
+            class="w-100 flex-grow-1 container-fluid bg-light">
+
+        <section class="text-center">
+          <h1 class="body-title">{% block body_title %}{% endblock %}</h1>
+          <h4 class="body-subtitle">{% block body_subtitle %}{% endblock %}</h4>
+        </section>
+
+        {% if form.errors %}
+          <section class="my-4 mx-auto container">
+            {% for field in form %}
+              {% for error in field.errors %}
+                <div class="alert alert-danger alert-dismissible text-center fade show"
+                     role="alert">
+                  <strong>Error: {{ error|escape }}</strong>
+                  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+              {% endfor %}
+            {% endfor %}
+          </section>
+        {% endif %}
+
+        {% if messages %}
+          <section class="mt-2 mx-auto container">
+            {% for message in messages %}
+              <div class="alert text-center
+                          {% if message.tags %}alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags}}{% endif %}
+                          {% endif %} alert-dismissible fade show"
+                   role="alert">
+                <strong>{{ message }}</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+              </div>
+            {% endfor %}
+          </section>
+        {% endif %}
+
+        <main class="mt-2" aria-label="content">
+          <div class="container">
+            {% block content %}{% endblock content %}
+          </div>
+        </main>
+
+      </div>
+
+      <footer id="page-footer"
+              class="py-4 bg-primary text-light text-center
+                     border-top border-gray">
+        <ul id="page-footer-list"
+            class="mb-2 list-unstyled small">
+
+          <!-- project name -->
+          <li class="mb-4">
+            <h4>
+              <a class="text-decoration-none text-light"
+                 href="{% url 'stripes:stripes_root' %}">
+                {{ PROJECT_NAME }}
+              </a>
+            </h4>
+          </li>
+
+          <li class="mt-4">
+            <a class="text-decoration-none text-light"
+               href="{% url 'stripes:stripes_root' %}">
+              Home
+            </a>
+          </li>
+
+          <!-- copyright info -->
+          <li class="mt-4">
+            <small>
+              &copy; Copyright {% now "Y" %}.  All rights reserved.
+            </small>
+          </li>
+
+        </ul>
+      </footer>
+
+    </div>
+
+    <!-- bootstrap js -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    {% block body_end_script %}{% endblock %}
+
+  </body>
+</html>
