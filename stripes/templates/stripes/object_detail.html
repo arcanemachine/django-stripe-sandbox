@@ -1,8 +1,8 @@
 {% extends 'base.html' %}
 
-{% block title %}{{ OBJECT_NAME }} List{% endblock %}
-{% block body_title %}{{ OBJECT_NAME }} List{% endblock %}
-{% block body_subtitle %}{{ OBJECT_NAME }} List{% endblock %}
+{% block title %}{{ OBJECT_NAME }} Detail{% endblock %}
+{% block body_title %}{{ OBJECT_NAME }} Detail{% endblock %}
+{% block body_subtitle %}{{ OBJECT_NAME }} Detail{% endblock %}
 
 {% block content %}
 
@@ -31,7 +31,7 @@
 
 <ul class="bottom-links">
   <li>
-    <a href="/{{ OBJECT_NAME|lower }}/create/">Create a new {{ OBJECT_NAME }}</a>
+    <a href="/{{ OBJECT_NAME|lower }}/">{{ OBJECT_NAME }} list</a>
   </li>
 </ul>
 
