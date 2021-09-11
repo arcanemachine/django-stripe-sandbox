@@ -28,7 +28,7 @@ class StripeSuccessMessageMixinTest(TestCase):
     @mock.patch(
         'django.contrib.messages.success', mock.Mock(return_value=True))
     def test_method_delete_calls_function_messages_success(self):
-        f.CustomerFactory()
+        test_customer = f.CustomerFactory()
 
         test_view = DummyDeleteView()
         request = RequestFactory().get('/')
@@ -37,7 +37,7 @@ class StripeSuccessMessageMixinTest(TestCase):
         # add mocks for test view
         test_view.get_success_url = mock.Mock(return_value='/')
         test_view.get_object =\
-            mock.Mock(return_value=Customer.objects.first())
+            mock.Mock(return_value=test_customer)
 
         # call delete() and check that the success message has been added
         test_view.delete(request)
