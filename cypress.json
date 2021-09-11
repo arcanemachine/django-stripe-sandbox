@@ -1,0 +1,8 @@
+{
+  "baseUrl": "http://localhost:8000",
+  "screenshotOnRunFailure": false,
+  "video": false,
+  "env": {
+    "url_stripes_root": "/"
+  }
+}

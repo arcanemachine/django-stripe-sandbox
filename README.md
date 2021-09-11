@@ -21,9 +21,12 @@ Examples include: Create PaymentIntent, PaymentMethod...
     - From the project's root folder, install the required dependencies
       - `pip install -r requirements.txt`
   - Running tests
-    - From the project's root folder, run `npm install`.
-    - To run unit tests, run `python3 manage.py test`.
-    - To run e2e tests, run `npm run cypress`.
+    - To run unit tests
+      - in the Django project folder, with virtualenv activated, run `python3 manage.py test`.
+    - To run e2e tests
+      - From the project's root folder, run `npm install`.
+      - Install [Cypress](https://docs.cypress.io/guides/getting-started/installing-cypress) (make sure to install [any required dependencies](https://docs.cypress.io/guides/getting-started/installing-cypress) as well)
+      - In the Django project folder, run `npm run cypress`.
 
 - (optional) You can generate a new secret key from the Django shell (`manage.py shell`) and set it as the `SECRET_KEY` in `settings.py`:
 `from django.core.management import utils
