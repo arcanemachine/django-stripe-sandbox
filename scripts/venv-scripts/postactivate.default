@@ -4,7 +4,7 @@
 # Any environment variables set will take precedence over local_config.py
 
 # export DJANGO_BASE_DIR=/your/django/project/folder/
-# export DJANGO_PROJECT_FOLDER_NAME=django_project_folder_name
+# export DJANGO_PROJECT_FOLDER_NAME=django_project_folder_name_without_slash
 # export DJANGO_SERVER_PORT=8000
 
 # export DJANGO_DEBUG=True
