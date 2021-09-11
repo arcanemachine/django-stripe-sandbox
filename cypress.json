@@ -2,7 +2,8 @@
   "baseUrl": "http://localhost:8000",
   "screenshotOnRunFailure": false,
   "video": false,
+  "watchForFileChanges": true,
   "env": {
-    "url_stripes_root": "/"
+    "url_stripes_stripes_root": "/"
   }
 }

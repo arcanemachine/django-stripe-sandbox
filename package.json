@@ -3,12 +3,20 @@
   "version": "1.0.0",
   "description": "This project shows how to use and test Stripe functionality.",
   "main": "index.js",
-  "dependencies": {},
+  "dependencies": {
+    "eslint": "^7.32.0",
+    "g": "^2.0.1"
+  },
   "devDependencies": {
     "cypress": "^8.3.1"
   },
   "scripts": {
-    "cypress": "cypress run"
+    "cypress": "cypress run",
+    "cypress-gui": "cypress open",
+    "cypress-browser-electron": "cypress run --browser electron",
+    "cypress-browser-firefox": "cypress run -b firefox",
+    "cypress-headless": "cypress run",
+    "cypress-watch": "nodemon -e js --exec cypress run"
   },
   "repository": {
     "type": "git",
