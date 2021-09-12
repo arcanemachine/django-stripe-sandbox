@@ -9,7 +9,8 @@
 {% if QUERYSET_VALUES %}
   <ul>
     {% for index, values in QUERYSET_VALUES.items %}
-      <li class="mb-2">
+      <li data-cy="object-list"
+          class="mb-2">
         <a href="/{{ OBJECT_NAME|lower }}/{{ values.id }}/">{{ OBJECT_NAME }} #{{ values.id }}</a>
         - <a href="/{{ OBJECT_NAME|lower }}/{{ values.id }}/update/">Update</a>
         - <a href="/{{ OBJECT_NAME|lower }}/{{ values.id }}/delete/">Delete</a>

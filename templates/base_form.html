@@ -49,6 +49,7 @@
     {% endif %}
 
     <button type="submit"
+            data-cy="base-form-button-submit"
             id="form-button-submit"
             class="btn btn-{% if confirm_style %}{{ confirm_style }}{% else %}success{% endif %} form-button form-button-submit">
       {% if submit_button_text %}
