@@ -16,9 +16,6 @@ class AbstractModel(models.Model):
 class Customer(AbstractModel):
     stripe_customer = models.JSONField(blank=True, null=True)
 
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
-
 
 # class Discount(models.Model):
 #     stripe_discount = models.JSONField(blank=True, null=True)
