@@ -20,17 +20,24 @@ Examples include: Create PaymentIntent, PaymentMethod...
       - `workon django-stripe-sandbox`
     - From the project's root folder, install the required dependencies
       - `pip install -r requirements.txt`
+    - generate a database
+      - Run `manage.py migrate` to generate a database.
+    - start the server
+      - Run `manage.py runserver` to start the development server
+      - (optional) You can generate a new secret key from the Django shell (`manage.py shell`) and set it as the `SECRET_KEY` in `settings.py`:
+        `from django.core.management import utils`
+        `print(utils.get_random_secret_key())`
   - Running tests
     - To run unit tests
-      - in the Django project folder, with virtualenv activated, run `python3 manage.py test`.
-    - To run e2e tests
+      - ensure the virtualenv is activated
+      - in the Django project folder run `python manage.py test`.
+    - To run E2E tests
+      - ensure the virtualenv is activated
+        - to avoid polluting the database, use `manage.py` to run a test server that will create its own database
+          - either execute `scripts/runserver-test.sh`
+          - or, use `manage.py`'s `testserver` command to specify your own settings, e.g.:
+            - `python manage.py testserver --addrport 0.0.0.0:7000 cypress/fixtures/empty.json`
+      - Ensure [npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) is installed (If not already installed, I recommend using [nvm](https://github.com/nvm-sh/nvm#installing-and-updating) instead to more easily manage npm versions)
       - From the project's root folder, run `npm install`.
       - Install [Cypress](https://docs.cypress.io/guides/getting-started/installing-cypress) (make sure to install [any required dependencies](https://docs.cypress.io/guides/getting-started/installing-cypress) as well)
       - In the Django project folder, run `npm run cypress`.
-
-- (optional) You can generate a new secret key from the Django shell (`manage.py shell`) and set it as the `SECRET_KEY` in `settings.py`:
-`from django.core.management import utils
-    print(utils.get_random_secret_key())`
-
-- Run `manage.py migrate` to generate a database.
-- Run `manage.py runserver` to start the development server
