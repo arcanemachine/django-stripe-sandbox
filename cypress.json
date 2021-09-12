@@ -1,9 +1,11 @@
 {
-  "baseUrl": "http://localhost:8000",
+  "baseUrl": "http://localhost:7000",
   "screenshotOnRunFailure": false,
   "video": false,
   "watchForFileChanges": true,
   "env": {
-    "url_stripes_stripes_root": "/"
+    "url_stripes_stripes_root": "/",
+    "url_stripes_customer_list": "/customer/",
+    "url_stripes_customer_create": "/customer/create/"
   }
 }
