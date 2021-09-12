@@ -1,31 +1,35 @@
 import logging
 import os
-from dotenv import load_dotenv, dotenv_values
+from dotenv import load_dotenv
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 load_dotenv()
 
+COLOR_CODE_GREEN = '\033[32m'
+COLOR_CODE_RED = '\033[31m'
+COLOR_CODE_WHITE = '\033[0m'
+COLOR_CODE_YELLOW = '\033[33m'
 
-def colorize(message, color="yellow"):
-    color_code_white = '\033[0m'
 
-    if color == "red":
-        color_code = '\033[31m'
-    elif color == "yellow":
-        color_code = '\033[33m'
-    elif color == "green":
-        color_code = '\033[32m'
+def colorize(message, color='yellow'):
+    if color == 'green':
+        color_code = COLOR_CODE_GREEN
+    elif color == 'red':
+        color_code = COLOR_CODE_RED
+    elif color == 'yellow':
+        color_code = COLOR_CODE_YELLOW
     else:
-        print("Invalid color specified. Using white...")
-        color_code = color_code_white
+        # print("Invalid color specified. Using white...")
+        color_code = COLOR_CODE_WHITE
 
-    return(f"{color_code}{message}{color_code_white}")
+    return(f"{color_code}{message}{COLOR_CODE_WHITE}")
 
 
 # settings
 def setting_get(val, default=None, cast=str, show_warning=False):
+    from dotenv import dotenv_values
     """
     Get setting from dotenv, environment variable, local_config, or default.
     Settings are prioritized in the order given above.
@@ -37,7 +41,18 @@ def setting_get(val, default=None, cast=str, show_warning=False):
     local_config_result = None  # local_config
     val_exists_in_locations = []
 
+    if val == 'TEST_KEY':
+        breakpoint()
+
     quote_mark = "'" if cast == str else ''  # used for quoting string values
+
+    # warn if default cannot be cast to specified type
+    try:
+        cast(default)
+    except ValueError:
+        logger.warning(
+            f"The default value specified for '{val}' cannot be cast to type "
+            f"'{cast.__name__}'. This may produce a runtime error.")
 
     # check dotenv file
     if val in dotenv_values('.env'):

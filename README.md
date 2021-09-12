@@ -2,9 +2,10 @@
 
 ![Coverage Badge](/static/img/coverage.svg "Coverage Badge")
 
-This project shows how to use and test Stripe functionality.
+This project shows how to use and test Stripe functionality. Unit tested with Django's TestCase and E2E tested with Cypress.
 
-Examples include: Create PaymentIntent, PaymentMethod...
+Functionality included:
+  - CRUDing Customers
 
 ## Setup Instructions
 

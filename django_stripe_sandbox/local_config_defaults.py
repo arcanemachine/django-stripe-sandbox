@@ -14,8 +14,9 @@ The values here will be used in settings.py if no custom values are assigned.
 """
 
 # important stuff
-DEBUG = True
-SECRET_KEY = 'your_secret_key'
+DJANGO_DEBUG = DEBUG = True
+DJANGO_SECRET_KEY = SECRET_KEY =\
+    'your_secret_key'
 ALLOWED_HOSTS = ['*']
 
 # static files - production server - basic config

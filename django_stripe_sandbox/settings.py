@@ -28,11 +28,15 @@ They may be overridden, and will be checked in the following order:
 
 SHOW_WARNING = True  # set False to disable default config warnings on console
 
-# important stuff
-DEBUG = h.setting_get(
-    'DEBUG', defaults.DEBUG, bool, SHOW_WARNING)
-SECRET_KEY = h.setting_get(
-    'SECRET_KEY', defaults.SECRET_KEY, str, SHOW_WARNING)
+# important stuff - namespaced to prevent collisions if using environment vars
+DJANGO_DEBUG = h.setting_get(
+    'DJANGO_DEBUG', defaults.DJANGO_DEBUG, bool, SHOW_WARNING)
+DJANGO_SECRET_KEY = h.setting_get(
+    'DJANGO_SECRET_KEY', defaults.DJANGO_SECRET_KEY, str, SHOW_WARNING)
+
+DEBUG = DJANGO_DEBUG
+SECRET_KEY = DJANGO_SECRET_KEY
+
 ALLOWED_HOSTS = h.setting_get(
     'ALLOWED_HOSTS', defaults.ALLOWED_HOSTS, str, False)
 
