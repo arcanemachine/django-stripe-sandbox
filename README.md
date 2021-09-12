@@ -23,10 +23,10 @@ Examples include: Create PaymentIntent, PaymentMethod...
     - From the project's root folder, install the required dependencies
       - `pip install -r requirements.txt`
     - generate a database
-      - Run `manage.py migrate` to generate a database.
+      - Run `python manage.py migrate` to generate a database.
     - start the server
-      - Run `manage.py runserver` to start the development server
-      - (optional) You can generate a new secret key from the Django shell (`manage.py shell`) and set it as the `SECRET_KEY` in `settings.py`:
+      - Run `python manage.py runserver` to start the development server
+      - (optional) You can generate a new secret key from the Django shell (`python manage.py shell`) and set it as the `SECRET_KEY` in `settings.py`:
         `from django.core.management import utils`
         `print(utils.get_random_secret_key())`
   - Running tests
