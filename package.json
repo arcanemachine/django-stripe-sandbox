@@ -4,8 +4,7 @@
   "description": "This project shows how to use and test Stripe functionality.",
   "main": "index.js",
   "dependencies": {
-    "eslint": "^7.32.0",
-    "g": "^2.0.1"
+    "eslint": "^7.32.0"
   },
   "devDependencies": {
     "cypress": "^8.3.1"
