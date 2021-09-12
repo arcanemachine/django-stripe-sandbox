@@ -43,3 +43,10 @@ class CustomerDeleteView(
         ContextObjectInfoMixin, CommonViewMixin, CustomerViewMixin,
         StripeSuccessMessageMixin, DeleteView):
     pass
+
+
+class CustomerNewestDeleteView(
+        ContextObjectInfoMixin, CommonViewMixin, CustomerViewMixin,
+        StripeSuccessMessageMixin, DeleteView):
+    def get_object(self):
+        return Customer.objects.last()
