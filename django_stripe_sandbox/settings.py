@@ -29,27 +29,27 @@ They may be overridden, and will be checked in the following order:
 SHOW_WARNING = True  # set False to disable default config warnings on console
 
 # important stuff
-DEBUG = h.get_setting(
+DEBUG = h.setting_get(
     'DEBUG', defaults.DEBUG, bool, SHOW_WARNING)
-SECRET_KEY = h.get_setting(
+SECRET_KEY = h.setting_get(
     'SECRET_KEY', defaults.SECRET_KEY, str, SHOW_WARNING)
-ALLOWED_HOSTS = h.get_setting(
+ALLOWED_HOSTS = h.setting_get(
     'ALLOWED_HOSTS', defaults.ALLOWED_HOSTS, str, False)
 
 # static files
-STATIC_ROOT = h.get_setting(
+STATIC_ROOT = h.setting_get(
     'STATIC_ROOT', defaults.STATIC_ROOT, bool, False)
-STATIC_URL = h.get_setting(
+STATIC_URL = h.setting_get(
     'STATIC_URL', defaults.STATIC_URL, str, False)
-STATICFILES_DIRS = h.get_setting(
+STATICFILES_DIRS = h.setting_get(
     'STATICFILES_DIRS', defaults.STATICFILES_DIRS, list, False)
 
 # THIRD-PARTY LIBRARIES #
 
 # stripe
-STRIPE_PUBLISHABLE_KEY = h.get_setting(
+STRIPE_PUBLISHABLE_KEY = h.setting_get(
     'STRIPE_PUBLISHABLE_KEY', defaults.STRIPE_PUBLISHABLE_KEY, list, True)
-STRIPE_SECRET_KEY = h.get_setting(
+STRIPE_SECRET_KEY = h.setting_get(
     'STRIPE_SECRET_KEY', defaults.STRIPE_SECRET_KEY, list, True)
 
 # *********************** END local config *********************** #
