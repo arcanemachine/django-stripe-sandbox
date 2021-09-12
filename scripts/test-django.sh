@@ -1,11 +1,10 @@
 if [ $DJANGO_BASE_DIR ]
 then
-  # find $DJANGO_BASE_DIR/$1 -name $2 | entr python3 ./manage.py test --keepdb
-  nodemon --ext "$1/*.py" --exec "./manage.py test $1.$2 --keepdb"
+  # nodemon --ext "$1/*.py" --exec "./manage.py test $1.$2 --keepdb"
+  find $DJANGO_BASE_DIR -name "*.py" | entr python manage.py test --keepdb
 else
-  DJANGO_BASE_DIR=/home/serv/code/django/django-stripe-sandbox
+  DJANGO_BASE_DIR=$PWD
   echo "DJANGO_BASE_DIR not specified. Using $DJANGO_BASE_DIR..."
-  # echo "find $DJANGO_BASE_DIR/$1 -name $2 | entr python3 ./manage.py test --keepdb"
-  # find $DJANGO_BASE_DIR/$1 -name $2 | entr python3 ./manage.py test --keepdb
-  nodemon --ext "$1/*.py" --exec "./manage.py test $1.$2"
+  echo "\nUntil you have set a DJANGO_BASE_DIR environment variable, this script will need to be run from the root folder of your Django app"
+  find $DJANGO_BASE_DIR -name "*.py" | entr python manage.py test --keepdb
 fi
