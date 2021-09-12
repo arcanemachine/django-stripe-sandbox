@@ -1,5 +1,7 @@
 # django-stripe-sandbox
 
+![Coverage Badge](/static/img/coverage.svg "Coverage Badge")
+
 This project shows how to use and test Stripe functionality.
 
 Examples include: Create PaymentIntent, PaymentMethod...
