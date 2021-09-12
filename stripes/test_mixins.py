@@ -5,7 +5,6 @@ from django.views.generic import CreateView, DeleteView, TemplateView,\
     UpdateView
 from unittest import mock
 
-from .views import CustomerDeleteView
 from .models import Customer
 from .mixins import CommonViewMixin, CustomerViewMixin,\
     StripeSuccessMessageMixin
