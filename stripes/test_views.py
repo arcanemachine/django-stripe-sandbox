@@ -1,5 +1,5 @@
 import json
-from django.test import TestCase
+from django.test import RequestFactory, TestCase
 from django.urls import resolve, reverse
 
 from .models import Customer
@@ -149,6 +149,59 @@ class CustomerDeleteViewTest(TestCase):
         for expected_mixin in expected_mixins:
             self.assertIn(expected_mixin, actual_mixins)
 
+    def test_method_get(self):
+        response = self.client.get(self.test_url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(
+            response, 'stripes/customer_confirm_delete.html')
+
+    # request.POST
+    def test_method_post_deletes_object(self):
+        # get object count before making POST request
+        object_count_old = Customer.objects.count()
+
+        # create POST request
+        response = self.client.post(self.test_url, follow=True)
+
+        # should redirect to customer's absolute url
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'stripes/customer_list.html')
+
+        # object count incremented by one
+        object_count_new = Customer.objects.count()
+        self.assertEqual(object_count_old - 1, object_count_new)
+
+
+class CustomerNewestDeleteViewTest(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.obj = Customer
+        cls.test_customer = f.CustomerFactory()
+        cls.view = views.CustomerDeleteView
+        cls.test_url = reverse('stripes:customer_delete_newest')
+
+    def test_mixins(self):
+        expected_mixins =\
+            ['ContextObjectInfoMixin', 'CommonViewMixin', 'CustomerViewMixin',
+             'StripeSuccessMessageMixin', 'DeleteView']
+        actual_mixins = [mixin.__name__ for mixin in self.view.__bases__]
+        for expected_mixin in expected_mixins:
+            self.assertIn(expected_mixin, actual_mixins)
+
+    # get_object()
+    def test_method_get_object_returns_last_customer(self):
+        # try with self.test_customer
+        response = self.client.get(self.test_url)
+        view_instance = response.context['view']
+        self.assertEqual(view_instance.get_object().pk, self.test_customer.pk)
+
+        # try with new Customer
+        test_customer = f.CustomerFactory()
+        response = self.client.get(self.test_url)
+        view_instance = response.context['view']
+        self.assertEqual(view_instance.get_object().pk, test_customer.pk)
+
+    # request.GET
     def test_method_get(self):
         response = self.client.get(self.test_url)
         self.assertEqual(response.status_code, 200)

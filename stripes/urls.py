@@ -20,10 +20,10 @@ urlpatterns = [
   path('customer/<int:customer_pk>/update/',
        views.CustomerUpdateView.as_view(),
        name='customer_update'),
-  path('customer/newest/delete/',
-       views.CustomerNewestDeleteView.as_view(),
-       name='customer_delete_newest'),
   path('customer/<int:customer_pk>/delete/',
        views.CustomerDeleteView.as_view(),
        name='customer_delete'),
+  path('customer/newest/delete/',
+       views.CustomerNewestDeleteView.as_view(),
+       name='customer_delete_newest'),
 ]
