@@ -10,8 +10,18 @@ class StripeSuccessMessageMixin(SuccessMessageMixin):
     success_message = 'success'
 
     def delete(self, request, *args, **kwargs):
-        messages.success(request, self.success_message)
+        messages.success(request, self.get_success_message({}))
         return super().delete(request, *args, **kwargs)
+
+    def get_success_message(self, cleaned_data):
+        bases = [base.__name__ for base in self.__class__.__bases__]
+        if 'CreateView' in bases:
+            self.success_message = f"create {self.success_message}"
+        elif 'UpdateView' in bases:
+            self.success_message = f"update {self.success_message}"
+        elif 'DeleteView' in bases:
+            self.success_message = f"delete {self.success_message}"
+        return super().get_success_message(cleaned_data)
 
 
 class CommonViewMixin:

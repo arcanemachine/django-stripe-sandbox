@@ -12,6 +12,14 @@ from .mixins import CommonViewMixin, CustomerViewMixin,\
 from django_stripe_sandbox import factories as f
 
 
+class DummyCreateView(StripeSuccessMessageMixin, CreateView):
+    model = Customer
+
+
+class DummyUpdateView(StripeSuccessMessageMixin, UpdateView):
+    model = Customer
+
+
 class DummyDeleteView(StripeSuccessMessageMixin, DeleteView):
     model = Customer
 
@@ -21,10 +29,12 @@ class StripeSuccessMessageMixinTest(TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.mixin = StripeSuccessMessageMixin
+        cls.cleaned_data_empty = {}
 
     def test_attribute_value_success_message(self):
         self.assertEqual(self.mixin.success_message, 'success')
 
+    # delete()
     @mock.patch(
         'django.contrib.messages.success', mock.Mock(return_value=True))
     def test_method_delete_calls_function_messages_success(self):
@@ -42,6 +52,24 @@ class StripeSuccessMessageMixinTest(TestCase):
         # call delete() and check that the success message has been added
         test_view.delete(request)
         messages.success.assert_called()
+
+    # get_success_message()
+    def test_method_get_success_message_createview_success_message(self):
+        self.assertEqual(
+            DummyCreateView().get_success_message(self.cleaned_data_empty),
+            f'create {self.mixin.success_message}')
+
+    def test_method_get_success_message_updateview_success_message(self):
+        self.assertEqual(
+            DummyUpdateView().get_success_message(self.cleaned_data_empty),
+            f'update {self.mixin.success_message}')
+
+    def test_method_get_success_message_deleteview_success_message(self):
+        self.assertEqual(
+            DummyDeleteView().get_success_message(self.cleaned_data_empty),
+            f'delete {self.mixin.success_message}')
+
+
 
 
 # create a dummy mixin to avoid duplicate boilerplate in dummy views
