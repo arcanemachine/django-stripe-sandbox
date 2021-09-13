@@ -18,7 +18,7 @@
           {% for key, value in values.items %}
             {% if key != 'id' and key not in OBJECT_VALUES_TO_IGNORE %}
               <li>{{ key }}:
-                <ul><li><pre>{{ value }}</pre></li></ul>
+                <ul><li><pre>{{ value|truncatechars:45 }}</pre></li></ul>
               </li>
             {% endif %}
           {% endfor %}
