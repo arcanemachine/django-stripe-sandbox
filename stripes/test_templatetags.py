@@ -1,6 +1,5 @@
 import logging
 import pprint
-from django.conf import settings
 from django.test import SimpleTestCase
 from unittest.mock import Mock, patch
 
