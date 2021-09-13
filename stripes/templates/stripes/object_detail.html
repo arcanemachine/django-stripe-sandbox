@@ -7,23 +7,21 @@
 
 {% block content %}
 
+<h4>{{ OBJECT_NAME }} #{{ object.id }}
+  - <a href="/{{ OBJECT_NAME|lower }}/{{ object.id }}/update/">Update</a>
+  - <a href="/{{ OBJECT_NAME|lower }}/{{ object.id }}/delete/">Delete</a>
+</h4>
+
 {% if QUERYSET_VALUES %}
   <ul>
     {% for index, values in QUERYSET_VALUES.items %}
-      <li class="mb-2">
-        <a href="/{{ OBJECT_NAME|lower }}/{{ values.id }}/">{{ OBJECT_NAME }} #{{ values.id }}</a>
-        - <a href="/{{ OBJECT_NAME|lower }}/{{ values.id }}/update/">Update</a>
-        - <a href="/{{ OBJECT_NAME|lower }}/{{ values.id }}/delete/">Delete</a>
-        <ul>
-          {% for key, value in values.items %}
-            {% if key != 'id' and key not in OBJECT_VALUES_TO_IGNORE %}
-              <li>{{ key }}:
-                <ul><li><pre>{{ value|pretty_print }}</pre></li></ul>
-              </li>
-            {% endif %}
-          {% endfor %}
-        </ul>
-      </li>
+      {% for key, value in values.items %}
+        {% if key != 'id' and key not in OBJECT_VALUES_TO_IGNORE %}
+          <li>{{ key }}:
+            <ul><li><pre>{{ value|pretty_print }}</pre></li></ul>
+          </li>
+        {% endif %}
+      {% endfor %}
     {% endfor %}
   </ul>
 {% else %}
