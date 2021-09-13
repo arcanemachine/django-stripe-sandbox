@@ -55,7 +55,7 @@ class Customer(AbstractModel):
 
 
 # class PaymentIntent(models.Model):
-#     stripe_payment_intent = models.JSONField(blank=True, null=True)
+#     stripe_paymentintent = models.JSONField(blank=True, null=True)
 
 
 # class PaymentMethod(models.Model):
@@ -75,7 +75,7 @@ class Customer(AbstractModel):
 
 
 # class SetupIntent(models.Model):
-#     stripe_setup_intent = models.JSONField(blank=True, null=True)
+#     stripe_setupintent = models.JSONField(blank=True, null=True)
 
 
 # class Sku(models.Model):
@@ -87,4 +87,4 @@ class Customer(AbstractModel):
 
 
 # class TaxRate(models.Model):
-#     stripe_tax_rate = models.JSONField(blank=True, null=True)
+#     stripe_taxrate = models.JSONField(blank=True, null=True)
