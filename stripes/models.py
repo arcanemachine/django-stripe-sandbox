@@ -1,4 +1,8 @@
+import stripe
+from django.conf import settings
 from django.db import models
+
+stripe.api_key = settings.STRIPE_SECRET_KEY
 
 
 class AbstractModel(models.Model):
@@ -15,6 +19,11 @@ class AbstractModel(models.Model):
 
 class Customer(AbstractModel):
     stripe_customer = models.JSONField(blank=True, null=True)
+
+    def save(self, *args, **kwargs):
+        if not self.stripe_customer:
+            self.stripe_customer = stripe.Customer.create()
+        super().save(*args, **kwargs)
 
 
 # class Discount(models.Model):

@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load pretty_print %}
 
 {% block title %}{{ OBJECT_NAME }} Detail{% endblock %}
 {% block body_title %}{{ OBJECT_NAME }} Detail{% endblock %}
@@ -17,7 +18,7 @@
           {% for key, value in values.items %}
             {% if key != 'id' and key not in OBJECT_VALUES_TO_IGNORE %}
               <li>{{ key }}:
-                <ul><li><pre>{{ value }}</pre></li></ul>
+                <ul><li><pre>{{ value|pretty_print }}</pre></li></ul>
               </li>
             {% endif %}
           {% endfor %}

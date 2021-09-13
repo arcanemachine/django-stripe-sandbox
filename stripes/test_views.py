@@ -1,6 +1,6 @@
 import json
-from django.test import RequestFactory, TestCase
-from django.urls import resolve, reverse
+from django.test import TestCase
+from django.urls import reverse
 
 from .models import Customer
 from . import views
