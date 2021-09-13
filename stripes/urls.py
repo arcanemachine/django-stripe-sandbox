@@ -26,4 +26,26 @@ urlpatterns = [
   path('customer/newest/delete/',
        views.CustomerNewestDeleteView.as_view(),
        name='customer_delete_newest'),
+
+
+  # paymentmethod
+  path('paymentmethod/',
+       views.PaymentMethodListView.as_view(),
+       name='paymentmethod_list'),
+  path('paymentmethod/create/',
+       views.PaymentMethodCreateView.as_view(),
+       name='paymentmethod_create'),
+  path('paymentmethod/<int:paymentmethod_pk>/',
+       views.PaymentMethodDetailView.as_view(),
+       name='paymentmethod_detail'),
+  path('paymentmethod/<int:paymentmethod_pk>/update/',
+       views.PaymentMethodUpdateView.as_view(),
+       name='paymentmethod_update'),
+  path('paymentmethod/<int:paymentmethod_pk>/delete/',
+       views.PaymentMethodDeleteView.as_view(),
+       name='paymentmethod_delete'),
+  path('paymentmethod/newest/delete/',
+       views.PaymentMethodNewestDeleteView.as_view(),
+       name='paymentmethod_delete_newest'),
+
 ]

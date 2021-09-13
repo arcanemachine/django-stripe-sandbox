@@ -58,8 +58,19 @@ class Customer(AbstractModel):
 #     stripe_paymentintent = models.JSONField(blank=True, null=True)
 
 
-# class PaymentMethod(models.Model):
-#     stripe_payment_method = models.JSONField(blank=True, null=True)
+class PaymentMethod(models.Model):
+    stripe_paymentmethod = models.JSONField(blank=True, null=True)
+
+    def save(self, *args, **kwargs):
+        if not self.stripe_paymentmethod:
+            self.stripe_paymentmethod = stripe.PaymentMethod.create(
+                type="card",
+                card={
+                    "number": "4242424242424242",
+                    "exp_month": 12,
+                    "exp_year": 2034,
+                    "cvc": 123})
+        super().save(*args, **kwargs)
 
 
 # class Quote(models.Model):

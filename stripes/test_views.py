@@ -2,9 +2,12 @@ import json
 from django.test import TestCase
 from django.urls import reverse
 
-from .models import Customer
+from .models import Customer, PaymentMethod
 from . import views
 from django_stripe_sandbox import factories as f
+
+common_mixins =\
+    ['ContextObjectInfoMixin', 'CommonViewMixin', 'StripeSuccessMessageMixin']
 
 
 # stripes_root
@@ -21,6 +24,9 @@ class StripesRootViewTest(TestCase):
 
 
 # customer
+customer_mixins = common_mixins + ['CustomerViewMixin']
+
+
 class CustomerListViewTest(TestCase):
     @classmethod
     def setUpTestData(cls):
@@ -28,9 +34,7 @@ class CustomerListViewTest(TestCase):
         cls.test_url = reverse('stripes:customer_list')
 
     def test_mixins(self):
-        expected_mixins =\
-            ['ContextObjectInfoMixin', 'CommonViewMixin', 'CustomerViewMixin',
-             'StripeSuccessMessageMixin', 'ListView']
+        expected_mixins = customer_mixins + ['ListView']
         actual_mixins = [mixin.__name__ for mixin in self.view.__bases__]
         for expected_mixin in expected_mixins:
             self.assertIn(expected_mixin, actual_mixins)
@@ -41,6 +45,26 @@ class CustomerListViewTest(TestCase):
         self.assertTemplateUsed(response, 'stripes/customer_list.html')
 
 
+class CustomerDetailViewTest(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        test_customer = f.CustomerFactory()
+        cls.view = views.CustomerDetailView
+        cls.test_url = reverse('stripes:customer_detail', kwargs={
+            'customer_pk': test_customer.pk})
+
+    def test_mixins(self):
+        expected_mixins = customer_mixins + ['DetailView']
+        actual_mixins = [mixin.__name__ for mixin in self.view.__bases__]
+        for expected_mixin in expected_mixins:
+            self.assertIn(expected_mixin, actual_mixins)
+
+    def test_method_get(self):
+        response = self.client.get(self.test_url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'stripes/customer_detail.html')
+
+
 class CustomerCreateViewTest(TestCase):
     @classmethod
     def setUpTestData(cls):
@@ -48,9 +72,7 @@ class CustomerCreateViewTest(TestCase):
         cls.test_url = reverse('stripes:customer_create')
 
     def test_mixins(self):
-        expected_mixins =\
-            ['ContextObjectInfoMixin', 'CommonViewMixin', 'CustomerViewMixin',
-             'StripeSuccessMessageMixin', 'CreateView']
+        expected_mixins = customer_mixins + ['CreateView']
         actual_mixins = [mixin.__name__ for mixin in self.view.__bases__]
         for expected_mixin in expected_mixins:
             self.assertIn(expected_mixin, actual_mixins)
@@ -75,28 +97,6 @@ class CustomerCreateViewTest(TestCase):
         self.assertEqual(object_count_old + 1, object_count_new)
 
 
-class CustomerDetailViewTest(TestCase):
-    @classmethod
-    def setUpTestData(cls):
-        test_customer = f.CustomerFactory()
-        cls.view = views.CustomerDetailView
-        cls.test_url = reverse('stripes:customer_detail', kwargs={
-            'customer_pk': test_customer.pk})
-
-    def test_mixins(self):
-        expected_mixins =\
-            ['ContextObjectInfoMixin', 'CommonViewMixin', 'CustomerViewMixin',
-             'StripeSuccessMessageMixin', 'DetailView']
-        actual_mixins = [mixin.__name__ for mixin in self.view.__bases__]
-        for expected_mixin in expected_mixins:
-            self.assertIn(expected_mixin, actual_mixins)
-
-    def test_method_get(self):
-        response = self.client.get(self.test_url)
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'stripes/customer_detail.html')
-
-
 class CustomerUpdateViewTest(TestCase):
     @classmethod
     def setUpTestData(cls):
@@ -106,9 +106,7 @@ class CustomerUpdateViewTest(TestCase):
             'customer_pk': cls.test_customer.pk})
 
     def test_mixins(self):
-        expected_mixins =\
-            ['ContextObjectInfoMixin', 'CommonViewMixin', 'CustomerViewMixin',
-             'StripeSuccessMessageMixin', 'UpdateView']
+        expected_mixins = customer_mixins + ['UpdateView']
         actual_mixins = [mixin.__name__ for mixin in self.view.__bases__]
         for expected_mixin in expected_mixins:
             self.assertIn(expected_mixin, actual_mixins)
@@ -142,9 +140,7 @@ class CustomerDeleteViewTest(TestCase):
             'customer_pk': test_customer.pk})
 
     def test_mixins(self):
-        expected_mixins =\
-            ['ContextObjectInfoMixin', 'CommonViewMixin', 'CustomerViewMixin',
-             'StripeSuccessMessageMixin', 'DeleteView']
+        expected_mixins = customer_mixins + ['DeleteView']
         actual_mixins = [mixin.__name__ for mixin in self.view.__bases__]
         for expected_mixin in expected_mixins:
             self.assertIn(expected_mixin, actual_mixins)
@@ -181,9 +177,7 @@ class CustomerNewestDeleteViewTest(TestCase):
         cls.test_url = reverse('stripes:customer_delete_newest')
 
     def test_mixins(self):
-        expected_mixins =\
-            ['ContextObjectInfoMixin', 'CommonViewMixin', 'CustomerViewMixin',
-             'StripeSuccessMessageMixin', 'DeleteView']
+        expected_mixins = customer_mixins + ['DeleteView']
         actual_mixins = [mixin.__name__ for mixin in self.view.__bases__]
         for expected_mixin in expected_mixins:
             self.assertIn(expected_mixin, actual_mixins)
@@ -222,4 +216,149 @@ class CustomerNewestDeleteViewTest(TestCase):
 
         # object count incremented by one
         object_count_new = Customer.objects.count()
+        self.assertEqual(object_count_old - 1, object_count_new)
+
+
+# paymentmethod
+paymentmethod_mixins = common_mixins + ['PaymentMethodViewMixin']
+
+
+class PaymentMethodListViewTest(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.view = views.PaymentMethodListView
+        cls.test_url = reverse('stripes:paymentmethod_list')
+
+    def test_mixins(self):
+        expected_mixins = paymentmethod_mixins + ['ListView']
+        actual_mixins = [mixin.__name__ for mixin in self.view.__bases__]
+        for expected_mixin in expected_mixins:
+            self.assertIn(expected_mixin, actual_mixins)
+
+    def test_method_get(self):
+        response = self.client.get(self.test_url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'stripes/paymentmethod_list.html')
+
+
+class PaymentMethodDetailViewTest(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        test_paymentmethod = f.PaymentMethodFactory()
+        cls.view = views.PaymentMethodDetailView
+        cls.test_url = reverse('stripes:paymentmethod_detail', kwargs={
+            'paymentmethod_pk': test_paymentmethod.pk})
+
+    def test_mixins(self):
+        expected_mixins = paymentmethod_mixins + ['DetailView']
+        actual_mixins = [mixin.__name__ for mixin in self.view.__bases__]
+        for expected_mixin in expected_mixins:
+            self.assertIn(expected_mixin, actual_mixins)
+
+    def test_method_get(self):
+        response = self.client.get(self.test_url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'stripes/paymentmethod_detail.html')
+
+
+class PaymentMethodCreateViewTest(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.view = views.PaymentMethodCreateView
+        cls.test_url = reverse('stripes:paymentmethod_create')
+
+    def test_mixins(self):
+        expected_mixins = paymentmethod_mixins + ['CreateView']
+        actual_mixins = [mixin.__name__ for mixin in self.view.__bases__]
+        for expected_mixin in expected_mixins:
+            self.assertIn(expected_mixin, actual_mixins)
+
+    # request.GET
+    def test_method_get(self):
+        response = self.client.get(self.test_url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'stripes/paymentmethod_form.html')
+
+    # request.POST
+    def test_method_post_creates_new_paymentmethod(self):
+        # get object count before making POST request
+        object_count_old = PaymentMethod.objects.count()
+
+        # create POST request
+        response = self.client.post(self.test_url, follow=True)
+        self.assertEqual(response.status_code, 200)
+
+        # object count incremented by one
+        object_count_new = PaymentMethod.objects.count()
+        self.assertEqual(object_count_old + 1, object_count_new)
+
+
+class PaymentMethodUpdateViewTest(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.test_paymentmethod = f.PaymentMethodFactory()
+        cls.view = views.PaymentMethodUpdateView
+        cls.test_url = reverse('stripes:paymentmethod_update', kwargs={
+            'paymentmethod_pk': cls.test_paymentmethod.pk})
+
+    def test_mixins(self):
+        expected_mixins = paymentmethod_mixins + ['UpdateView']
+        actual_mixins = [mixin.__name__ for mixin in self.view.__bases__]
+        for expected_mixin in expected_mixins:
+            self.assertIn(expected_mixin, actual_mixins)
+
+    def test_method_get(self):
+        response = self.client.get(self.test_url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'stripes/paymentmethod_form.html')
+
+    # request.POST
+    def test_method_post_updates_object(self):
+        # create POST request
+        form_data = {'stripe_paymentmethod': '{"key": "value"}'}  # proper JSON
+        response = self.client.post(self.test_url, data=form_data, follow=True)
+        self.assertEqual(response.status_code, 200)
+
+        # object contains updated data
+        self.test_paymentmethod.refresh_from_db()
+        self.assertEqual(
+            self.test_paymentmethod.stripe_paymentmethod,
+            json.loads(form_data['stripe_paymentmethod']))
+
+
+class PaymentMethodDeleteViewTest(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.obj = PaymentMethod
+        test_paymentmethod = f.PaymentMethodFactory()
+        cls.view = views.PaymentMethodDeleteView
+        cls.test_url = reverse('stripes:paymentmethod_delete', kwargs={
+            'paymentmethod_pk': test_paymentmethod.pk})
+
+    def test_mixins(self):
+        expected_mixins = paymentmethod_mixins + ['DeleteView']
+        actual_mixins = [mixin.__name__ for mixin in self.view.__bases__]
+        for expected_mixin in expected_mixins:
+            self.assertIn(expected_mixin, actual_mixins)
+
+    def test_method_get(self):
+        response = self.client.get(self.test_url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(
+            response, 'stripes/paymentmethod_confirm_delete.html')
+
+    # request.POST
+    def test_method_post_deletes_object(self):
+        # get object count before making POST request
+        object_count_old = PaymentMethod.objects.count()
+
+        # create POST request
+        response = self.client.post(self.test_url, follow=True)
+
+        # should redirect to paymentmethod's absolute url
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'stripes/paymentmethod_list.html')
+
+        # object count incremented by one
+        object_count_new = PaymentMethod.objects.count()
         self.assertEqual(object_count_old - 1, object_count_new)

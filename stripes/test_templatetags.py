@@ -31,5 +31,5 @@ class PrettyPrintTest(SimpleTestCase):
         test_dict = {'test_key_1': 'test_value',
                      'test_key_2': ['a', 'b', 'c'],
                      'test_key_3': {'a': 1, 'b': 2, 'c': 3}}
-        self.assertEqual(pprint.pformat(test_dict, indent=2, sort_dicts=False),
+        self.assertEqual(pprint.pformat(test_dict, sort_dicts=False),
                          pretty_print.pretty_print(test_dict))
