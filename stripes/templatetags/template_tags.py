@@ -1,8 +1,30 @@
 import logging
+import re
 from django import template
 from django.conf import settings
+from pprint import pformat
 
 register = template.Library()
+
+
+@register.filter('pretty_print')
+def pretty_print(value):
+    """Convert a JSON value to a pretty-printed format"""
+    return pformat(value, sort_dicts=False)
+
+
+@register.simple_tag(takes_context=True)
+def view_name_as_page_title(context):
+    view_name = context['request'].resolver_match.func.__name__
+
+    # add spaces before capital letters
+    spaced_view_name = re.sub(r"(\w)([A-Z])", r"\1 \2", view_name)
+
+    # remove ' View' from the result
+    if spaced_view_name[-5:] == ' View':
+        spaced_view_name = spaced_view_name[:-5]
+
+    return spaced_view_name
 
 
 @register.simple_tag(takes_context=True)

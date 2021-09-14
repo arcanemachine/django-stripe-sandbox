@@ -23,6 +23,10 @@ urlpatterns = [
   path('customer/<int:customer_pk>/delete/',
        views.CustomerDeleteView.as_view(),
        name='customer_delete'),
+
+  path('customer/payment-methods/link/',
+       views.CustomerLinkPaymentMethodView.as_view(),
+       name='customer_delete_newest'),
   path('customer/newest/delete/',
        views.CustomerNewestDeleteView.as_view(),
        name='customer_delete_newest'),
@@ -44,6 +48,7 @@ urlpatterns = [
   path('paymentmethod/<int:paymentmethod_pk>/delete/',
        views.PaymentMethodDeleteView.as_view(),
        name='paymentmethod_delete'),
+
   path('paymentmethod/newest/delete/',
        views.PaymentMethodNewestDeleteView.as_view(),
        name='paymentmethod_delete_newest'),

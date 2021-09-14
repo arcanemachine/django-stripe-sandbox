@@ -1,15 +1,11 @@
 {% extends 'base.html' %}
-{% load pretty_print %}
-
-{% block title %}{{ OBJECT_NAME }} Detail{% endblock %}
-{% block body_title %}{{ OBJECT_NAME }} Detail{% endblock %}
-{% block body_subtitle %}{{ OBJECT_NAME }} Detail{% endblock %}
+{% load template_tags %}
 
 {% block content %}
 
-<h4>{{ OBJECT_NAME }} #{{ object.id }}
-  - <a href="/{{ OBJECT_NAME|lower }}/{{ object.id }}/update/">Update</a>
-  - <a href="/{{ OBJECT_NAME|lower }}/{{ object.id }}/delete/">Delete</a>
+<h4>{{ OBJECT_NAME }} #{{ object.pk }}
+  - <a href="/{{ OBJECT_NAME|lower }}/{{ object.pk }}/update/">Update</a>
+  - <a href="/{{ OBJECT_NAME|lower }}/{{ object.pk }}/delete/">Delete</a>
 </h4>
 
 {% if QUERYSET_VALUES %}

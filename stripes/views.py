@@ -1,7 +1,8 @@
 from django.shortcuts import render
-from django.views.generic import CreateView, DeleteView, DetailView, \
+from django.views.generic import CreateView, DeleteView, DetailView, FormView,\
     ListView, UpdateView
 
+from . import forms
 from .mixins import CustomerViewMixin, PaymentMethodViewMixin
 
 
@@ -34,6 +35,11 @@ class CustomerDeleteView(CustomerViewMixin, DeleteView):
 class CustomerNewestDeleteView(CustomerViewMixin, DeleteView):
     def get_object(self):
         return self.model.objects.last()
+
+
+class CustomerLinkPaymentMethodView(FormView):
+    template_name = 'stripes/customer_form.html'
+    form_class = forms.CustomerLinkPaymentMethodForm
 
 
 # paymentmethod

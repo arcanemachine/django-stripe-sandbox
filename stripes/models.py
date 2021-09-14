@@ -10,7 +10,7 @@ class AbstractModel(models.Model):
         return '/'
 
     def __str__(self):
-        return str(self.id)
+        return str(self.pk)
 
 
 # class Coupon(models.Model):

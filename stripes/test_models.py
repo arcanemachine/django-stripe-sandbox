@@ -15,7 +15,7 @@ class AbstractModelTest(TestCase):
 
     def test_method_str(self):
         string_representation = self.test_model.__str__()
-        self.assertEqual(string_representation, str(self.test_model.id))
+        self.assertEqual(string_representation, str(self.test_model.pk))
 
 
 class CustomerModelTest(TestCase):
