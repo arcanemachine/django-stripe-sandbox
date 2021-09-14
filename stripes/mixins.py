@@ -5,7 +5,22 @@ from django.urls import reverse
 from . import models
 
 
-# mixins
+class ContextObjectInfoMixin:
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context['OBJECT_NAME'] = self.model.__name__
+
+        QUERYSET_VALUES = {}
+        for index, values in enumerate(self.get_queryset().values()):
+            QUERYSET_VALUES.update({index: values})
+        context['QUERYSET_VALUES'] = QUERYSET_VALUES
+
+        context['OBJECT_VALUES_TO_IGNORE'] = ['abstractmodel_ptr_id']
+
+        return context
+
+
 class StripeSuccessMessageMixin(SuccessMessageMixin):
     success_message = 'success'
 
@@ -13,6 +28,7 @@ class StripeSuccessMessageMixin(SuccessMessageMixin):
         messages.success(request, self.get_success_message({}))
         return super().delete(request, *args, **kwargs)
 
+    # for each different view type, return a generic success message
     def get_success_message(self, cleaned_data):
         bases = [base.__name__ for base in self.__class__.__bases__]
         object_name = self.model.__name__
@@ -28,8 +44,15 @@ class StripeSuccessMessageMixin(SuccessMessageMixin):
         return super().get_success_message(cleaned_data)
 
 
-class CommonViewMixin:
+class StripeCommonViewMixin(ContextObjectInfoMixin, StripeSuccessMessageMixin):
     context_object_name = 'object'
+
+    def dispatch(self, request, *args, **kwargs):
+        if self.__class__.__bases__[-1].__name__ == 'CreateView':
+            self.fields = ()
+        elif self.__class__.__bases__[-1].__name__ == 'UpdateView':
+            self.fields = '__all__'
+        return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -42,27 +65,12 @@ class CommonViewMixin:
         return reverse(f'stripes:{self.model.__name__.lower()}_list')
 
 
-class CustomerViewMixin:
+# stripe objects
+class CustomerViewMixin(StripeCommonViewMixin):
     model = models.Customer
     pk_url_kwarg = 'customer_pk'
 
-    def dispatch(self, request, *args, **kwargs):
-        if self.__class__.__bases__[-1].__name__ == 'CreateView':
-            self.fields = ()
-        elif self.__class__.__bases__[-1].__name__ == 'UpdateView':
-            self.fields = '__all__'
-        return super().dispatch(request, *args, **kwargs)
 
-
-class PaymentMethodViewMixin:
+class PaymentMethodViewMixin(StripeCommonViewMixin):
     model = models.PaymentMethod
     pk_url_kwarg = 'paymentmethod_pk'
-
-    def dispatch(self, request, *args, **kwargs):
-        if 'CreateView' in \
-                [klass.__name__ for klass in self.__class__.__bases__]:
-            self.fields = ()
-        elif 'UpdateView' in \
-                [klass.__name__ for klass in self.__class__.__bases__]:
-            self.fields = '__all__'
-        return super().dispatch(request, *args, **kwargs)

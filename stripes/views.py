@@ -2,9 +2,7 @@ from django.shortcuts import render
 from django.views.generic import CreateView, DeleteView, DetailView, \
     ListView, UpdateView
 
-from .mixins import CommonViewMixin, CustomerViewMixin, \
-    PaymentMethodViewMixin, StripeSuccessMessageMixin
-from django_stripe_sandbox.mixins import ContextObjectInfoMixin
+from .mixins import CustomerViewMixin, PaymentMethodViewMixin
 
 
 # stripes_root
@@ -13,78 +11,52 @@ def stripes_root(request):
 
 
 # customer
-class CustomerListView(
-        ContextObjectInfoMixin, CommonViewMixin, CustomerViewMixin,
-        StripeSuccessMessageMixin, ListView):
+class CustomerListView(CustomerViewMixin, ListView):
     pass
 
 
-class CustomerDetailView(
-        ContextObjectInfoMixin, CommonViewMixin, CustomerViewMixin,
-        StripeSuccessMessageMixin, DetailView):
+class CustomerDetailView(CustomerViewMixin, DetailView):
     pass
 
 
-class CustomerCreateView(
-        ContextObjectInfoMixin, CommonViewMixin, CustomerViewMixin,
-        StripeSuccessMessageMixin, CreateView):
+class CustomerCreateView(CustomerViewMixin, CreateView):
     pass
 
 
-class CustomerUpdateView(
-        ContextObjectInfoMixin, CommonViewMixin, CustomerViewMixin,
-        StripeSuccessMessageMixin, UpdateView):
+class CustomerUpdateView(CustomerViewMixin, UpdateView):
     pass
 
 
-class CustomerDeleteView(
-        ContextObjectInfoMixin, CommonViewMixin, CustomerViewMixin,
-        StripeSuccessMessageMixin, DeleteView):
+class CustomerDeleteView(CustomerViewMixin, DeleteView):
     pass
 
 
-class CustomerNewestDeleteView(
-        ContextObjectInfoMixin, CommonViewMixin, CustomerViewMixin,
-        StripeSuccessMessageMixin, DeleteView):
+class CustomerNewestDeleteView(CustomerViewMixin, DeleteView):
     def get_object(self):
         return self.model.objects.last()
 
 
 # paymentmethod
-class PaymentMethodListView(
-        ContextObjectInfoMixin, CommonViewMixin, PaymentMethodViewMixin,
-        StripeSuccessMessageMixin, ListView):
+class PaymentMethodListView(PaymentMethodViewMixin, ListView):
     pass
 
 
-class PaymentMethodDetailView(
-        ContextObjectInfoMixin, CommonViewMixin, PaymentMethodViewMixin,
-        StripeSuccessMessageMixin, DetailView):
+class PaymentMethodDetailView(PaymentMethodViewMixin, DetailView):
     pass
 
 
-class PaymentMethodCreateView(
-        ContextObjectInfoMixin, CommonViewMixin, PaymentMethodViewMixin,
-        StripeSuccessMessageMixin, CreateView):
+class PaymentMethodCreateView(PaymentMethodViewMixin, CreateView):
     pass
 
 
-class PaymentMethodUpdateView(
-        ContextObjectInfoMixin, CommonViewMixin, PaymentMethodViewMixin,
-        StripeSuccessMessageMixin, UpdateView):
+class PaymentMethodUpdateView(PaymentMethodViewMixin, UpdateView):
     pass
 
 
-class PaymentMethodDeleteView(
-        ContextObjectInfoMixin, CommonViewMixin, PaymentMethodViewMixin,
-        StripeSuccessMessageMixin, DeleteView):
+class PaymentMethodDeleteView(PaymentMethodViewMixin, DeleteView):
     pass
 
 
-class PaymentMethodNewestDeleteView(
-        ContextObjectInfoMixin, CommonViewMixin, PaymentMethodViewMixin,
-        StripeSuccessMessageMixin, DeleteView):
+class PaymentMethodNewestDeleteView(PaymentMethodViewMixin, DeleteView):
     def get_object(self):
         return self.model.objects.last()
-
-

@@ -5,51 +5,48 @@ from django.views.generic import CreateView, DeleteView, TemplateView,\
     UpdateView
 from unittest.mock import Mock, patch
 
+from .mixins import StripeCommonViewMixin, CustomerViewMixin,\
+                    PaymentMethodViewMixin, StripeSuccessMessageMixin
 from .models import AbstractModel, Customer, PaymentMethod
-from . import mixins
-from django_stripe_sandbox import factories as f
 
 generic_request = RequestFactory().get('/')
 
 
 # StripeSuccessMessageMixin
-class DummySSMCreateView(mixins.StripeSuccessMessageMixin, CreateView):
+class DummySSMCreateView(StripeSuccessMessageMixin, CreateView):
     model = AbstractModel
 
 
-class DummySSMUpdateView(mixins.StripeSuccessMessageMixin, UpdateView):
+class DummySSMUpdateView(StripeSuccessMessageMixin, UpdateView):
     model = AbstractModel
 
 
-class DummySSMDeleteView(mixins.StripeSuccessMessageMixin, DeleteView):
+class DummySSMDeleteView(StripeSuccessMessageMixin, DeleteView):
     model = AbstractModel
 
 
 class StripeSuccessMessageMixinTest(TestCase):
-    cleaned_data_empty = {}
+    stub_cleaned_data = {}
 
     @classmethod
     def setUpTestData(cls):
-        cls.mixin = mixins.StripeSuccessMessageMixin
+        cls.mixin = StripeSuccessMessageMixin
 
     def test_attribute_value_success_message(self):
         self.assertEqual(self.mixin.success_message, 'success')
 
     # delete()
     @patch('django.contrib.messages.success', Mock(return_value=True))
-    def test_method_delete_calls_function_messages_success(self):
-        test_customer = f.CustomerFactory()
+    def test_method_delete_calls_function_messages_success_old(self):
+        view_instance = DummySSMDeleteView()
+        view_instance.setup(generic_request)
 
-        test_view = DummySSMDeleteView()
-        test_view.setup(generic_request)
+        # add mocks to satisfy delete() method
+        view_instance.get_success_url = Mock(return_value='/')
+        view_instance.get_object = Mock()
 
-        # add mocks for test view
-        test_view.get_success_url = Mock(return_value='/')
-        test_view.get_object =\
-            Mock(return_value=test_customer)
-
-        # call delete() and check that the success message has been added
-        test_view.delete(generic_request)
+        # call delete() and check that messages.success has been called
+        view_instance.delete(generic_request)
         messages.success.assert_called()
 
     # get_success_message()
@@ -57,91 +54,95 @@ class StripeSuccessMessageMixinTest(TestCase):
         view = DummySSMCreateView
         object_name = view.model.__name__
         self.assertEqual(
-            view().get_success_message(self.cleaned_data_empty),
+            view().get_success_message(self.stub_cleaned_data),
             f"{object_name} create {self.mixin.success_message}")
 
     def test_method_get_success_message_updateview_success_message(self):
         view = DummySSMUpdateView
         object_name = view.model.__name__
         self.assertEqual(
-            view().get_success_message(self.cleaned_data_empty),
+            view().get_success_message(self.stub_cleaned_data),
             f"{object_name} update {self.mixin.success_message}")
 
     def test_method_get_success_message_deleteview_success_message(self):
         view = DummySSMDeleteView
         object_name = view.model.__name__
         self.assertEqual(
-            view().get_success_message(self.cleaned_data_empty),
+            view().get_success_message(self.stub_cleaned_data),
             f"{object_name} delete {self.mixin.success_message}")
 
 
-# dummy mixin is used to avoid duplicate boilerplate in dummy views
-class DummyMixin:
-    object = None
-    fields = '__all__'
-
-    def get_queryset(self):
-        return Customer.objects.none()
+# StripeCommonViewMixin
+class DummySCVMTemplateView(StripeCommonViewMixin, TemplateView):
+    model = AbstractModel
 
 
-class DummyMixinTest(TestCase):
+class DummySCVMCreateView(StripeCommonViewMixin, CreateView):
+    model = AbstractModel
+
+
+class DummySCVMUpdateView(StripeCommonViewMixin, UpdateView):
+    model = AbstractModel
+
+
+class StripeCommonViewMixinTest(TestCase):
     @classmethod
     def setUpTestData(cls):
-        cls.mixin = DummyMixin
-
-    def test_attribute_object_value(self):
-        self.assertIsNone(self.mixin.object)
-
-    def test_attribute_fields_value(self):
-        self.assertEqual(self.mixin.fields, '__all__')
-
-    def test_method_get_queryset_returns_empty_queryset(self):
-        self.assertEqual(set(self.mixin().get_queryset()),
-                         set(Customer.objects.none()))
-
-
-class CommonViewMixinTest(TestCase):
-    @classmethod
-    def setUpTestData(cls):
-        cls.mixin = mixins.CommonViewMixin
+        cls.mixin = StripeCommonViewMixin
 
     def test_attribute_context_object_name_value(self):
         self.assertEqual(self.mixin.context_object_name, 'object')
 
+    # dispatch()
+    def test_method_dispatch_sets_expected_fields_for_createview(self):
+        view_instance = DummySCVMCreateView()
+        view_instance.setup(generic_request)
+
+        view_instance.get = Mock(return_value=None)  # satisfies dispatch()
+        view_instance.dispatch(generic_request)
+        self.assertEqual(view_instance.fields, ())
+
+    def test_method_dispatch_sets_expected_fields_for_updateview(self):
+        view_instance = DummySCVMUpdateView()
+        view_instance.setup(generic_request)
+
+        view_instance.get = Mock(return_value=None)  # satisfies dispatch()
+        view_instance.dispatch(generic_request)
+        self.assertEqual(view_instance.fields, '__all__')
+
     # get_context_data()
-    def test_context_has_action_verb_none_in_templateview(self):
-        class DummyTemplateView(self.mixin, TemplateView):
-            pass
-
-        self.dummy_templateview = DummyTemplateView()
-        self.dummy_templateview.setup(generic_request)
-
-        context = self.dummy_templateview.get_context_data()
-        self.assertEqual(context['action_verb'], None)
-
     def test_context_has_action_verb_create_in_createview(self):
-        class DummyCreateView(self.mixin, DummyMixin, CreateView):
-            pass
+        view_instance = DummySCVMCreateView()
+        view_instance.setup(generic_request)
 
-        self.dummy_createview = DummyCreateView()
-        self.dummy_createview.setup(generic_request)
+        view_instance.get_form = Mock()  # satisfies get_context_data()
+        view_instance.object = Mock()  # satisfies get_context_data()
 
-        context = self.dummy_createview.get_context_data()
+        context = view_instance.get_context_data()
         self.assertEqual(context['action_verb'], 'create')
 
-    def test_context_has_action_verb_create_in_updateview(self):
-        class DummyUpdateView(self.mixin, DummyMixin, UpdateView):
-            pass
+    def test_context_has_action_verb_update_in_updateview(self):
+        view_instance = DummySCVMUpdateView()
+        view_instance.setup(generic_request)
 
-        self.dummy_updateview = DummyUpdateView()
-        self.dummy_updateview.setup(generic_request)
+        view_instance.get_form = Mock()  # satisfies get_context_data()
+        view_instance.object = Mock()  # satisfies get_context_data()
 
-        context = self.dummy_updateview.get_context_data()
+        context = view_instance.get_context_data()
         self.assertEqual(context['action_verb'], 'update')
+
+    def test_context_has_action_verb_none_in_non_create_or_update_view(self):
+        view_instance = DummySCVMTemplateView()
+        view_instance.setup(generic_request)
+
+        # satisfies get_context_data()
+        view_instance.get_queryset = Mock(return_value={})
+
+        context = view_instance.get_context_data()
+        self.assertEqual(context['action_verb'], None)
 
     # get_success_url
     def test_method_get_success_url_returns_expected_url(self):
-        # create an instance of the mixin using the Customer model
         mixin_instance = self.mixin()
         mixin_instance.model = Customer
         success_url = mixin_instance.get_success_url()
@@ -151,18 +152,18 @@ class CommonViewMixinTest(TestCase):
 
 
 # CustomerViewMixin
-class DummyCVMCreateView(mixins.CustomerViewMixin, CreateView):
+class DummyCVMCreateView(CustomerViewMixin, CreateView):
     model = AbstractModel
 
 
-class DummyCVMUpdateView(mixins.CustomerViewMixin, UpdateView):
+class DummyCVMUpdateView(CustomerViewMixin, UpdateView):
     model = AbstractModel
 
 
 class CustomerViewMixinTest(TestCase):
     @classmethod
     def setUpTestData(cls):
-        cls.mixin = mixins.CustomerViewMixin
+        cls.mixin = CustomerViewMixin
 
     def test_attribute_model_name_value(self):
         self.assertEqual(self.mixin.model, Customer)
@@ -170,51 +171,23 @@ class CustomerViewMixinTest(TestCase):
     def test_attribute_pk_url_kwarg_value(self):
         self.assertEqual(self.mixin.pk_url_kwarg, 'customer_pk')
 
-    # dispatch()
-    def test_method_dispatch_returns_expected_value_for_createview(self):
-        view_instance = DummyCVMCreateView()
-        view_instance.setup(generic_request)
-        view_instance.dispatch(generic_request)
-        self.assertEqual(view_instance.fields, ())
-
-    def test_method_dispatch_returns_expected_value_for_updateview(self):
-        view_instance = DummyCVMUpdateView()
-        view_instance.setup(generic_request)
-        view_instance.get_object = Mock(return_value=None)
-        view_instance.dispatch(generic_request)
-        self.assertEqual(view_instance.fields, '__all__')
-
 
 # PaymentMethodViewMixin
-class DummyPVMCreateView(mixins.PaymentMethodViewMixin, CreateView):
+class DummyPVMCreateView(PaymentMethodViewMixin, CreateView):
     model = AbstractModel
 
 
-class DummyPVMUpdateView(mixins.PaymentMethodViewMixin, UpdateView):
+class DummyPVMUpdateView(PaymentMethodViewMixin, UpdateView):
     model = AbstractModel
 
 
 class PaymentMethodViewMixinTest(TestCase):
     @classmethod
     def setUpTestData(cls):
-        cls.mixin = mixins.PaymentMethodViewMixin
+        cls.mixin = PaymentMethodViewMixin
 
     def test_attribute_model_name_value(self):
         self.assertEqual(self.mixin.model, PaymentMethod)
 
     def test_attribute_pk_url_kwarg_value(self):
         self.assertEqual(self.mixin.pk_url_kwarg, 'paymentmethod_pk')
-
-    # dispatch()
-    def test_method_dispatch_returns_expected_value_for_createview(self):
-        view_instance = DummyPVMCreateView()
-        view_instance.setup(generic_request)
-        view_instance.dispatch(generic_request)
-        self.assertEqual(view_instance.fields, ())
-
-    def test_method_dispatch_returns_expected_value_for_updateview(self):
-        view_instance = DummyPVMUpdateView()
-        view_instance.setup(generic_request)
-        view_instance.get_object = Mock(return_value=None)
-        view_instance.dispatch(generic_request)
-        self.assertEqual(view_instance.fields, '__all__')

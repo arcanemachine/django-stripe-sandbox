@@ -6,9 +6,6 @@ from .models import Customer, PaymentMethod
 from . import views
 from django_stripe_sandbox import factories as f
 
-common_mixins =\
-    ['ContextObjectInfoMixin', 'CommonViewMixin', 'StripeSuccessMessageMixin']
-
 
 # stripes_root
 class StripesRootViewTest(TestCase):
@@ -24,9 +21,6 @@ class StripesRootViewTest(TestCase):
 
 
 # customer
-customer_mixins = common_mixins + ['CustomerViewMixin']
-
-
 class CustomerListViewTest(TestCase):
     @classmethod
     def setUpTestData(cls):
@@ -34,7 +28,7 @@ class CustomerListViewTest(TestCase):
         cls.test_url = reverse('stripes:customer_list')
 
     def test_mixins(self):
-        expected_mixins = customer_mixins + ['ListView']
+        expected_mixins = ['CustomerViewMixin', 'ListView']
         actual_mixins = [mixin.__name__ for mixin in self.view.__bases__]
         for expected_mixin in expected_mixins:
             self.assertIn(expected_mixin, actual_mixins)
@@ -54,7 +48,7 @@ class CustomerDetailViewTest(TestCase):
             'customer_pk': test_customer.pk})
 
     def test_mixins(self):
-        expected_mixins = customer_mixins + ['DetailView']
+        expected_mixins = ['CustomerViewMixin', 'DetailView']
         actual_mixins = [mixin.__name__ for mixin in self.view.__bases__]
         for expected_mixin in expected_mixins:
             self.assertIn(expected_mixin, actual_mixins)
@@ -72,7 +66,7 @@ class CustomerCreateViewTest(TestCase):
         cls.test_url = reverse('stripes:customer_create')
 
     def test_mixins(self):
-        expected_mixins = customer_mixins + ['CreateView']
+        expected_mixins = ['CustomerViewMixin', 'CreateView']
         actual_mixins = [mixin.__name__ for mixin in self.view.__bases__]
         for expected_mixin in expected_mixins:
             self.assertIn(expected_mixin, actual_mixins)
@@ -106,7 +100,7 @@ class CustomerUpdateViewTest(TestCase):
             'customer_pk': cls.test_customer.pk})
 
     def test_mixins(self):
-        expected_mixins = customer_mixins + ['UpdateView']
+        expected_mixins = ['CustomerViewMixin', 'UpdateView']
         actual_mixins = [mixin.__name__ for mixin in self.view.__bases__]
         for expected_mixin in expected_mixins:
             self.assertIn(expected_mixin, actual_mixins)
@@ -140,7 +134,7 @@ class CustomerDeleteViewTest(TestCase):
             'customer_pk': test_customer.pk})
 
     def test_mixins(self):
-        expected_mixins = customer_mixins + ['DeleteView']
+        expected_mixins = ['CustomerViewMixin', 'DeleteView']
         actual_mixins = [mixin.__name__ for mixin in self.view.__bases__]
         for expected_mixin in expected_mixins:
             self.assertIn(expected_mixin, actual_mixins)
@@ -177,7 +171,7 @@ class CustomerNewestDeleteViewTest(TestCase):
         cls.test_url = reverse('stripes:customer_delete_newest')
 
     def test_mixins(self):
-        expected_mixins = customer_mixins + ['DeleteView']
+        expected_mixins = ['CustomerViewMixin', 'DeleteView']
         actual_mixins = [mixin.__name__ for mixin in self.view.__bases__]
         for expected_mixin in expected_mixins:
             self.assertIn(expected_mixin, actual_mixins)
@@ -220,9 +214,6 @@ class CustomerNewestDeleteViewTest(TestCase):
 
 
 # paymentmethod
-paymentmethod_mixins = common_mixins + ['PaymentMethodViewMixin']
-
-
 class PaymentMethodListViewTest(TestCase):
     @classmethod
     def setUpTestData(cls):
@@ -230,7 +221,7 @@ class PaymentMethodListViewTest(TestCase):
         cls.test_url = reverse('stripes:paymentmethod_list')
 
     def test_mixins(self):
-        expected_mixins = paymentmethod_mixins + ['ListView']
+        expected_mixins = ['PaymentMethodViewMixin', 'ListView']
         actual_mixins = [mixin.__name__ for mixin in self.view.__bases__]
         for expected_mixin in expected_mixins:
             self.assertIn(expected_mixin, actual_mixins)
@@ -250,7 +241,7 @@ class PaymentMethodDetailViewTest(TestCase):
             'paymentmethod_pk': test_paymentmethod.pk})
 
     def test_mixins(self):
-        expected_mixins = paymentmethod_mixins + ['DetailView']
+        expected_mixins = ['PaymentMethodViewMixin', 'DetailView']
         actual_mixins = [mixin.__name__ for mixin in self.view.__bases__]
         for expected_mixin in expected_mixins:
             self.assertIn(expected_mixin, actual_mixins)
@@ -268,7 +259,7 @@ class PaymentMethodCreateViewTest(TestCase):
         cls.test_url = reverse('stripes:paymentmethod_create')
 
     def test_mixins(self):
-        expected_mixins = paymentmethod_mixins + ['CreateView']
+        expected_mixins = ['PaymentMethodViewMixin', 'CreateView']
         actual_mixins = [mixin.__name__ for mixin in self.view.__bases__]
         for expected_mixin in expected_mixins:
             self.assertIn(expected_mixin, actual_mixins)
@@ -302,7 +293,7 @@ class PaymentMethodUpdateViewTest(TestCase):
             'paymentmethod_pk': cls.test_paymentmethod.pk})
 
     def test_mixins(self):
-        expected_mixins = paymentmethod_mixins + ['UpdateView']
+        expected_mixins = ['PaymentMethodViewMixin', 'UpdateView']
         actual_mixins = [mixin.__name__ for mixin in self.view.__bases__]
         for expected_mixin in expected_mixins:
             self.assertIn(expected_mixin, actual_mixins)
@@ -336,7 +327,7 @@ class PaymentMethodDeleteViewTest(TestCase):
             'paymentmethod_pk': test_paymentmethod.pk})
 
     def test_mixins(self):
-        expected_mixins = paymentmethod_mixins + ['DeleteView']
+        expected_mixins = ['PaymentMethodViewMixin', 'DeleteView']
         actual_mixins = [mixin.__name__ for mixin in self.view.__bases__]
         for expected_mixin in expected_mixins:
             self.assertIn(expected_mixin, actual_mixins)
