@@ -15,11 +15,11 @@ class CustomerListView(CustomerViewMixin, ListView):
     pass
 
 
-class CustomerDetailView(CustomerViewMixin, DetailView):
+class CustomerCreateView(CustomerViewMixin, CreateView):
     pass
 
 
-class CustomerCreateView(CustomerViewMixin, CreateView):
+class CustomerDetailView(CustomerViewMixin, DetailView):
     pass
 
 
@@ -41,11 +41,11 @@ class PaymentMethodListView(PaymentMethodViewMixin, ListView):
     pass
 
 
-class PaymentMethodDetailView(PaymentMethodViewMixin, DetailView):
+class PaymentMethodCreateView(PaymentMethodViewMixin, CreateView):
     pass
 
 
-class PaymentMethodCreateView(PaymentMethodViewMixin, CreateView):
+class PaymentMethodDetailView(PaymentMethodViewMixin, DetailView):
     pass
 
 

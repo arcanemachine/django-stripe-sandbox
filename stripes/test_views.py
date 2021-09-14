@@ -39,26 +39,6 @@ class CustomerListViewTest(TestCase):
         self.assertTemplateUsed(response, 'stripes/customer_list.html')
 
 
-class CustomerDetailViewTest(TestCase):
-    @classmethod
-    def setUpTestData(cls):
-        test_customer = f.CustomerFactory()
-        cls.view = views.CustomerDetailView
-        cls.test_url = reverse('stripes:customer_detail', kwargs={
-            'customer_pk': test_customer.pk})
-
-    def test_mixins(self):
-        expected_mixins = ['CustomerViewMixin', 'DetailView']
-        actual_mixins = [mixin.__name__ for mixin in self.view.__bases__]
-        for expected_mixin in expected_mixins:
-            self.assertIn(expected_mixin, actual_mixins)
-
-    def test_method_get(self):
-        response = self.client.get(self.test_url)
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'stripes/customer_detail.html')
-
-
 class CustomerCreateViewTest(TestCase):
     @classmethod
     def setUpTestData(cls):
@@ -89,6 +69,26 @@ class CustomerCreateViewTest(TestCase):
         # object count incremented by one
         object_count_new = Customer.objects.count()
         self.assertEqual(object_count_old + 1, object_count_new)
+
+
+class CustomerDetailViewTest(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        test_customer = f.CustomerFactory()
+        cls.view = views.CustomerDetailView
+        cls.test_url = reverse('stripes:customer_detail', kwargs={
+            'customer_pk': test_customer.pk})
+
+    def test_mixins(self):
+        expected_mixins = ['CustomerViewMixin', 'DetailView']
+        actual_mixins = [mixin.__name__ for mixin in self.view.__bases__]
+        for expected_mixin in expected_mixins:
+            self.assertIn(expected_mixin, actual_mixins)
+
+    def test_method_get(self):
+        response = self.client.get(self.test_url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'stripes/customer_detail.html')
 
 
 class CustomerUpdateViewTest(TestCase):
@@ -232,26 +232,6 @@ class PaymentMethodListViewTest(TestCase):
         self.assertTemplateUsed(response, 'stripes/paymentmethod_list.html')
 
 
-class PaymentMethodDetailViewTest(TestCase):
-    @classmethod
-    def setUpTestData(cls):
-        test_paymentmethod = f.PaymentMethodFactory()
-        cls.view = views.PaymentMethodDetailView
-        cls.test_url = reverse('stripes:paymentmethod_detail', kwargs={
-            'paymentmethod_pk': test_paymentmethod.pk})
-
-    def test_mixins(self):
-        expected_mixins = ['PaymentMethodViewMixin', 'DetailView']
-        actual_mixins = [mixin.__name__ for mixin in self.view.__bases__]
-        for expected_mixin in expected_mixins:
-            self.assertIn(expected_mixin, actual_mixins)
-
-    def test_method_get(self):
-        response = self.client.get(self.test_url)
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'stripes/paymentmethod_detail.html')
-
-
 class PaymentMethodCreateViewTest(TestCase):
     @classmethod
     def setUpTestData(cls):
@@ -282,6 +262,26 @@ class PaymentMethodCreateViewTest(TestCase):
         # object count incremented by one
         object_count_new = PaymentMethod.objects.count()
         self.assertEqual(object_count_old + 1, object_count_new)
+
+
+class PaymentMethodDetailViewTest(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        test_paymentmethod = f.PaymentMethodFactory()
+        cls.view = views.PaymentMethodDetailView
+        cls.test_url = reverse('stripes:paymentmethod_detail', kwargs={
+            'paymentmethod_pk': test_paymentmethod.pk})
+
+    def test_mixins(self):
+        expected_mixins = ['PaymentMethodViewMixin', 'DetailView']
+        actual_mixins = [mixin.__name__ for mixin in self.view.__bases__]
+        for expected_mixin in expected_mixins:
+            self.assertIn(expected_mixin, actual_mixins)
+
+    def test_method_get(self):
+        response = self.client.get(self.test_url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'stripes/paymentmethod_detail.html')
 
 
 class PaymentMethodUpdateViewTest(TestCase):
