@@ -28,7 +28,7 @@ class StripeSuccessMessageMixin(SuccessMessageMixin):
         messages.success(request, self.get_success_message({}))
         return super().delete(request, *args, **kwargs)
 
-    # for each different view type, return a generic success message
+    # return a generic success message for certain CRUD view types
     def get_success_message(self, cleaned_data):
         bases = [base.__name__ for base in self.__class__.__bases__]
         object_name = self.model.__name__

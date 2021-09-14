@@ -5,11 +5,51 @@ from django.views.generic import CreateView, DeleteView, TemplateView,\
     UpdateView
 from unittest.mock import Mock, patch
 
-from .mixins import StripeCommonViewMixin, CustomerViewMixin,\
-                    PaymentMethodViewMixin, StripeSuccessMessageMixin
+from .mixins import ContextObjectInfoMixin, CustomerViewMixin,\
+    PaymentMethodViewMixin, StripeCommonViewMixin, StripeSuccessMessageMixin
 from .models import AbstractModel, Customer, PaymentMethod
 
 generic_request = RequestFactory().get('/')
+
+
+# ContextObjectInfoMixin
+class DummySCVMTemplateView(ContextObjectInfoMixin, TemplateView):
+    model = Customer
+
+
+class ContextObjectInfoMixinTest(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.mixin = ContextObjectInfoMixin
+
+    def test_get_context_data_returns_expected_object_name(self):
+        view = DummySCVMTemplateView
+
+        # satisfies get_context_data()
+        view.get_queryset = Mock(return_value={})
+
+        context = view().get_context_data()
+        self.assertEqual(context['OBJECT_NAME'], 'AbstractModel')
+
+    def test_get_context_data_returns_expected_queryset_values(self):
+        view = DummySCVMTemplateView
+
+        # satisfies get_context_data()
+        view.get_queryset = Mock(return_value={'TEST_KEY': 'TEST_VALUE'})
+
+        context = view().get_context_data()
+        self.assertEqual(
+            context['QUERYSET_VALUES'], {0: 'TEST_VALUE'})
+
+    def test_method_get_context_data_returns_expected_values_to_ignore(self):
+        view = DummySCVMTemplateView
+
+        # satisfies get_context_data()
+        view.get_queryset = Mock(return_value={})
+
+        context = view().get_context_data()
+        self.assertEqual(
+            context['OBJECT_VALUES_TO_IGNORE'], ['abstractmodel_ptr_id'])
 
 
 # StripeSuccessMessageMixin
