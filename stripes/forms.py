@@ -3,7 +3,7 @@ from django import forms
 from .models import Customer, PaymentMethod
 
 
-class CustomerLinkPaymentMethodForm(forms.Form):
+class CustomerAttachPaymentMethodForm(forms.Form):
     customer = forms.ChoiceField()
     paymentmethod = forms.ChoiceField()
 

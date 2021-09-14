@@ -292,6 +292,9 @@ footer {
 .vertical-align-center {
   vertical-align: center;
 }
+.vertical-align-super {
+  vertical-align: super;
+}
 .visibility-hidden {
   visibility: hidden;
 }

@@ -3,6 +3,60 @@
 
 {% block content %}
 
+<ul class="bottom-links">
+  {% if OBJECT_NAME == 'Customer' or OBJECT_NAME == 'PaymentMethod' %}
+    <div class="mt-4 fs-2">PaymentMethods</div>
+    <ul class="mb-4">
+
+      {% if OBJECT_NAME == 'Customer' %}
+        <li class="mt-2">
+          {% if object.paymentmethods.count %}
+            Attached:
+            {% for paymentmethod in object.paymentmethods.all %}
+              <a href="{% url 'stripes:paymentmethod_detail' paymentmethod_pk=paymentmethod.pk %}">
+                {{ paymentmethod.stripe_paymentmethod.id }}</a>{% if not forloop.last %},{% endif %}
+            {% endfor %}
+          {% else %}
+            This Customer has no PaymentMethods attached to it.
+          {% endif %}
+        </li>
+
+      {% elif OBJECT_NAME == 'PaymentMethod' %}
+        <li class="mt-2">
+          {% if object.customer %}
+            Attached:
+            <a href="{% url 'stripes:customer_detail' customer_pk=object.customer.pk %}">
+              Customer #{{ object.customer.id }}
+            </a>
+          {% else %}
+            This PaymentMethod is not attached to a Customer
+          {% endif %}
+        </li>
+      {% endif %}
+
+      <li class="mt-2">
+        <a href="{% url 'stripes:customer_payment_method_attach' %}">
+          Attach a Payment Method
+        </a>
+      </li>
+    </ul>
+
+    {% if OBJECT_NAME == 'Customer' %}
+      <div class="mt-4 fs-2">Purchases</div>
+      <ul class="mb-4">
+        <li class="mt-2"><a href="#">View Purchase History</a></li>
+        <li><a href="#">Make Purchase</a>
+        </li>
+      </ul>
+    {% endif %}
+
+  {% endif %}
+
+  <li>
+    <a href="/{{ OBJECT_NAME|lower }}/">Return to {{ OBJECT_NAME }} list</a>
+  </li>
+</ul>
+
 <h4>{{ OBJECT_NAME }} #{{ object.pk }}
   - <a href="/{{ OBJECT_NAME|lower }}/{{ object.pk }}/update/">Update</a>
   - <a href="/{{ OBJECT_NAME|lower }}/{{ object.pk }}/delete/">Delete</a>
@@ -23,11 +77,5 @@
 {% else %}
   <p class="fw-bold">No '{{ OBJECT_NAME }}' objects have been created.</p>
 {% endif %}
-
-<ul class="bottom-links">
-  <li>
-    <a href="/{{ OBJECT_NAME|lower }}/">{{ OBJECT_NAME }} list</a>
-  </li>
-</ul>
 
 {% endblock content %}

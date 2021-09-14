@@ -1,13 +1,16 @@
 import stripe
 from django.conf import settings
 from django.db import models
+from django.urls import reverse
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
 
 class AbstractModel(models.Model):
     def get_absolute_url(self):
-        return '/'
+        model_name_lowercased = self.__class__.__name__.lower()
+        return reverse(f"stripes:{model_name_lowercased}_detail", kwargs={
+            f"{model_name_lowercased}_pk": self.pk})
 
     def __str__(self):
         return str(self.pk)
@@ -59,6 +62,9 @@ class Customer(AbstractModel):
 
 
 class PaymentMethod(models.Model):
+    customer = models.ForeignKey(
+        'stripes.Customer', related_name="paymentmethods",
+        null=True, on_delete=models.SET_NULL)
     stripe_paymentmethod = models.JSONField(blank=True, null=True)
 
     def save(self, *args, **kwargs):

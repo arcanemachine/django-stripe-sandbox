@@ -1,17 +1,20 @@
 from django.test import TestCase
+from django.urls import reverse
 
-from .models import AbstractModel, Customer, PaymentMethod
+from .models import Customer, PaymentMethod
 from django_stripe_sandbox import factories as f
 
 
 class AbstractModelTest(TestCase):
     @classmethod
     def setUpTestData(cls):
-        cls.test_model = AbstractModel.objects.create()
+        cls.test_model = Customer.objects.create()
 
     def test_method_get_absolute_url(self):
-        absolute_url = self.test_model.get_absolute_url()
-        self.assertEqual(absolute_url, '/')
+        expected = reverse('stripes:customer_detail', kwargs={
+            'customer_pk': self.test_model.pk})
+        actual = self.test_model.get_absolute_url()
+        self.assertEqual(expected, actual)
 
     def test_method_str(self):
         string_representation = self.test_model.__str__()
